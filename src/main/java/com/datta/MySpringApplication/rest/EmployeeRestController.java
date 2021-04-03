@@ -1,10 +1,9 @@
 package com.datta.MySpringApplication.rest;
 
-import com.datta.MySpringApplication.dao.EmployeeDAO;
 import com.datta.MySpringApplication.entity.Employee;
+import com.datta.MySpringApplication.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -12,20 +11,46 @@ import java.util.List;
 @RequestMapping("/api")
 public class EmployeeRestController {
 
-  private EmployeeDAO employeeDAO;
+  private EmployeeService employeeService;
 
   @Autowired
-  public EmployeeRestController(EmployeeDAO employeeDAO) {
-    this.employeeDAO = employeeDAO;
+  public EmployeeRestController(EmployeeService employeeService) {
+    this.employeeService = employeeService;
   }
 
   @RequestMapping("employees")
   public List<Employee> findAllEmployees() {
-    return employeeDAO.findAllEmployee();
+    // http method is "get" for finding a employee
+    return employeeService.findAllEmployee();
   }
 
-    @RequestMapping("check")
-    public String findAll() {
-        return "hello";
-    }
+  @RequestMapping("employeebyid/{id}")
+  public Employee findEmployeeById(@PathVariable int id) {
+    // http method is "get" for finding a employee
+    return employeeService.findEmployeeById(id);
+  }
+
+  @PostMapping("createemployee")
+  public void saveEmployee(@RequestBody Employee employee) {
+    // http method is "post" for creating a employee
+    // http method is "put" for updating an employee
+    // it will force to add a new row instead of update
+    employee.setId(0);
+
+    employeeService.saveEmployee(employee);
+  }
+
+  @PutMapping("updateemployee")
+  public void updateEmployee(@RequestBody Employee employee) {
+    // http method is "post" for creating a employee
+    // http method is "put" for updating an employee
+    // it will force to add a new row instead of update
+
+    employeeService.saveEmployee(employee);
+  }
+
+  @DeleteMapping("deleteemployees/{id}")
+  public void deleteEmployeeById(@PathVariable int id) {
+    employeeService.deleteEmployeeById(id);
+  }
 }
